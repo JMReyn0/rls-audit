@@ -1,0 +1,48 @@
+{
+  "name": "rls-audit",
+  "version": "0.1.0",
+  "description": "Audit Postgres / Supabase Row-Level Security posture: unprotected tables, permissive policies, anon-reachable sensitive data.",
+  "type": "module",
+  "bin": {
+    "rls-audit": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "node --import tsx src/cli.ts",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "test:db:up": "docker compose -f test/docker-compose.yml up -d --wait",
+    "test:db:down": "docker compose -f test/docker-compose.yml down -v"
+  },
+  "keywords": [
+    "postgres",
+    "supabase",
+    "rls",
+    "row-level-security",
+    "security",
+    "audit",
+    "sast",
+    "database-security"
+  ],
+  "license": "MIT",
+  "author": "Justin Reynolds",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justinmreynolds93-afk/rls-audit.git"
+  },
+  "dependencies": {
+    "picocolors": "^1.1.1",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

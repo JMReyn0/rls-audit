@@ -1,0 +1,66 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: rlsaudit
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d rlsaudit"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: load fixture schema
+        run: psql "$DB" -v ON_ERROR_STOP=1 -f test/fixtures/schema.sql
+        env:
+          DB: postgres://postgres:postgres@localhost:55432/rlsaudit
+          PGPASSWORD: postgres
+      - run: npm run lint
+      - run: npm test
+        env:
+          TEST_DATABASE_URL: postgres://postgres:postgres@localhost:55432/rlsaudit
+      - run: npm run build
+
+  self-scan:
+    needs: test
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: rlsaudit
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d rlsaudit"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci && npm run build
+      - run: psql "postgres://postgres:postgres@localhost:55432/rlsaudit" -v ON_ERROR_STOP=1 -f test/fixtures/schema.sql
+        env: { PGPASSWORD: postgres }
+      - name: run rls-audit against the fixture (expected to fail — it's flawed on purpose)
+        run: |
+          node dist/cli.js --db-url postgres://postgres:postgres@localhost:55432/rlsaudit --format markdown | tee report.md
+          test "${PIPESTATUS[0]}" -eq 1
+      - uses: actions/upload-artifact@v4
+        with: { name: rls-audit-report, path: report.md }
