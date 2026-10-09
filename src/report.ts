@@ -142,7 +142,7 @@ function sarif(findings: Finding[]) {
         tool: {
           driver: {
             name: "rls-audit",
-            informationUri: "https://github.com/justinmreynolds93-afk/rls-audit",
+            informationUri: "https://github.com/JMReyn0/rls-audit",
             rules,
           },
         },

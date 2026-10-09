@@ -34,7 +34,7 @@
   "author": "Justin Reynolds",
   "repository": {
     "type": "git",
-    "url": "https://github.com/justinmreynolds93-afk/rls-audit.git"
+    "url": "https://github.com/JMReyn0/rls-audit.git"
   },
   "dependencies": {
     "picocolors": "^1.1.1",

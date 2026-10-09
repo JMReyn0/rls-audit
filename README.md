@@ -4,7 +4,7 @@ Audit Postgres / Supabase **Row-Level Security** posture from the command line.
 Finds the tables anyone with your anon key can read, the policies that don't
 actually restrict anything, and the sensitive columns sitting behind them.
 
-![ci](https://github.com/justinmreynolds93-afk/rls-audit/actions/workflows/ci.yml/badge.svg)
+![ci](https://github.com/JMReyn0/rls-audit/actions/workflows/ci.yml/badge.svg)
 ![license](https://img.shields.io/badge/license-MIT-blue)
 ![node](https://img.shields.io/badge/node-%E2%89%A520-brightgreen)
 
